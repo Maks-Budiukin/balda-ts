@@ -14,7 +14,7 @@ export class Cell implements ICell {
     this.picked = false
   }
 
-  setLetter(letter: string): void {
+  setLetter(letter: string | null): void {
     this.letter = letter
   }
 
