@@ -84,6 +84,7 @@ export class Game implements IGame {
 
   async initGame(): Promise<void> {
     this.board.init()
+    this.state.submittedWords.push(this.board.state.initWord)
   }
 
   startGame(): void {

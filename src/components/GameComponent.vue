@@ -36,7 +36,8 @@ const setBoard = (initWord: string): void => {
 
 const setGame = (): void => {
     if (board.value) {
-        game.value = new Game(board.value, players.value, wordService)
+        const newGame = new Game(board.value, players.value, wordService)
+        game.value = newGame
     }
 }
 
