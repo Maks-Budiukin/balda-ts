@@ -1,25 +1,21 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
 import CellComponent from '@/components/CellComponent.vue';
+import type { ICell } from '@/core/cell/types';
 
-const props = defineProps({
-    cellsMap: {
-        type: Array,
-        required: true
-    },
-    initWord: {
-        type: String,
-        required: true
-    },
-    isPlaying: {
-        type: Boolean,
-        default: false
-    }
-})
+const props = defineProps<{
+    cellsMap: ICell[][]
+    initWord: string
+    isPlaying: boolean
+}>()
 
-const emit = defineEmits(['check', 'place', 'pick'])
+const emit = defineEmits<{
+    check: [x: number, y: number]
+    place: [event: DragEvent, x: number, y: number]
+    pick: [x: number, y: number]
+}>()
 
-const boardStyle = computed(() => {
+const boardStyle = computed<string>(() => {
     return `repeat(${props.initWord.length}, minmax(40px, 1fr))`
 });
 

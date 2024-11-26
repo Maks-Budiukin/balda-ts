@@ -19,6 +19,4 @@ export interface IGame {
   skipTurn(): void
   initGame(): Promise<void>
   startGame(): void
-  getWinner(): void
-  endGame(): void
 }

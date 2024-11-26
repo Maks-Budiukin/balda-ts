@@ -4,7 +4,6 @@ export type ScoreObject = {
 }
 
 export interface IPlayer {
-  playerNumber: number
   scoreBoard: ScoreObject[]
   totalScore: number
 

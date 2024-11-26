@@ -1,10 +1,10 @@
-<script setup>
-const initWord = defineModel('word');
-const playersAmount = defineModel('players');
+<script setup lang="ts">
+const initWord = defineModel<string>('word');
+const playersAmount = defineModel<number>('players');
 const emit = defineEmits(['start']);
 
 const canStart = () => {
-    if (initWord.value.length >= 5 && initWord.value.length <= 7) {
+    if (initWord.value && initWord.value.length >= 5 && initWord.value.length <= 7) {
         emit('start')
     } else {
         window.alert('Слово должно быть от 5 до 7 букв')

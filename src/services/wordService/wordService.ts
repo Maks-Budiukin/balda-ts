@@ -1,12 +1,12 @@
 import type { IWordService, VocabularyType } from './types'
 
 export class WordService implements IWordService {
-  vocabulary: VocabularyType | null
+  private vocabulary: VocabularyType | null
 
   constructor() {
     this.vocabulary = null
   }
-  async fetchData(): Promise<void> {
+  private async fetchData(): Promise<void> {
     try {
       const response = await fetch(
         'https://raw.githubusercontent.com/Harrix/Russian-Nouns/refs/heads/main/src/data.json',

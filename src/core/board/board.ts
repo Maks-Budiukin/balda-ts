@@ -24,7 +24,7 @@ export class Board implements IBoard {
     }
   }
 
-  fill(): void {
+  private fill(): void {
     for (let x = 0; x <= this.state.size - 1; x += 1) {
       this.state.cellsMap[x] = []
       for (let y = 0; y <= this.state.size - 1; y += 1) {
@@ -34,7 +34,7 @@ export class Board implements IBoard {
     }
   }
 
-  placeInitWord(): void {
+  private placeInitWord(): void {
     const middleRow = Math.floor(this.state.initWord.length / 2)
     for (let i = 0; i <= this.state.initWord.length - 1; i += 1) {
       this.state.cellsMap[i][middleRow].setLetter(this.state.initWord[i])
@@ -42,7 +42,12 @@ export class Board implements IBoard {
     this.state.openedCells += this.state.initWord.length
   }
 
-  getCell(x: number, y: number): ICell | null {
+  init(): void {
+    this.fill()
+    this.placeInitWord()
+  }
+
+  private getCell(x: number, y: number): ICell | null {
     if (this.state.cellsMap[x]?.[y]) {
       return this.state.cellsMap[x][y]
     } else {
@@ -50,7 +55,7 @@ export class Board implements IBoard {
     }
   }
 
-  getNeighbors(x: number, y: number, callback?: (neighbors: ICell[]) => any): any {
+  private getNeighbors(x: number, y: number, callback?: (neighbors: ICell[]) => any): any {
     const directions = [
       [0, 1],
       [1, 0],

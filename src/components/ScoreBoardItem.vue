@@ -1,22 +1,24 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import TooltipComponent from './TooltipComponent.vue';
 
-// eslint-disable-next-line no-unused-vars
-const props = defineProps({
-    item: {
-        type: Object,
-        required: true
-    }
-});
+type ScoreBoardItemType = {
+    word: string,
+    definition: string
+}
 
-const tooltipVisible = ref(false);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const props = defineProps<{
+    item: ScoreBoardItemType
+}>();
 
-const showTooltip = () => {
+const tooltipVisible = ref<boolean>(false);
+
+const showTooltip = (): void => {
     tooltipVisible.value = true;
 };
 
-const hideTooltip = () => {
+const hideTooltip = (): void => {
     tooltipVisible.value = false;
 };
 
@@ -28,11 +30,22 @@ const hideTooltip = () => {
         <p>{{ item.word }}</p>
 
         <div class="relative">
-            <span @mouseenter="showTooltip" @mouseleave="hideTooltip"
-                class="flex items-center justify-center w-3 h-3 rounded-full border border-[#a0a0a0] text-[8px] text-[#A0A0A0] translate-y-[-50%] cursor-default">?</span>
+            <span @mouseenter="showTooltip" @mouseleave="hideTooltip" class="tooltip">?</span>
             <TooltipComponent :show="tooltipVisible" :text="item.definition" />
         </div>
     </li>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.score-item {
+    @apply flex items-center gap-2;
+}
+
+.word-score {
+    @apply w-6 h-6 text-xs rounded-full border flex items-center justify-center;
+}
+
+.tooltip {
+    @apply flex items-center justify-center w-3 h-3 rounded-full border border-[#a0a0a0] text-[8px] text-[#A0A0A0] translate-y-[-50%] cursor-default;
+}
+</style>

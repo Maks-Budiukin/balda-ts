@@ -1,3 +1,16 @@
+<script setup lang="ts">
+// const alphabet = Array.from({ length: 32 }, (_, i) => String.fromCharCode(1040 + i));
+const alphabet = [
+    "Й", "Ц", "У", "К", "Е", "Н", "Г", "Ш", "Щ", "З", "Х", "Ъ",
+    "Ф", "Ы", "В", "А", "П", "Р", "О", "Л", "Д", "Ж", "Э",
+    "Я", "Ч", "С", "М", "И", "Т", "Ь", "Б", "Ю"
+]
+
+const dragLetter = (event: DragEvent, letter: string): void => {
+    event.dataTransfer?.setData('letter', letter)
+};
+</script>
+
 <template>
     <div class="keyboard">
         <div v-for="letter in alphabet" :key="letter" class="cell" draggable="true"
@@ -7,19 +20,6 @@
     </div>
 </template>
 
-<script setup>
-// const alphabet = Array.from({ length: 32 }, (_, i) => String.fromCharCode(1040 + i));
-
-const alphabet = [
-    "Й", "Ц", "У", "К", "Е", "Н", "Г", "Ш", "Щ", "З", "Х", "Ъ",
-    "Ф", "Ы", "В", "А", "П", "Р", "О", "Л", "Д", "Ж", "Э",
-    "Я", "Ч", "С", "М", "И", "Т", "Ь", "Б", "Ю"
-]
-
-const dragLetter = (event, letter) => {
-    event.dataTransfer.setData('letter', letter)
-};
-</script>
 
 <style scoped lang="scss">
 .keyboard {

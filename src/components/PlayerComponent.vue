@@ -1,12 +1,11 @@
-<script setup>
+<script setup lang="ts">
+import type { IPlayer } from '@/core/player/types';
 import ScoreBoardItem from './ScoreBoardItem.vue';
-// eslint-disable-next-line no-unused-vars
-const props = defineProps({
-    player: {
-        type: Object,
-        required: true
-    }
-});
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const props = defineProps<{
+    player: IPlayer
+}>();
 
 </script>
 
@@ -24,13 +23,5 @@ const props = defineProps({
 <style lang="scss" scoped>
 .wrapper {
     @apply p-4 rounded-lg flex-1 basis-[20%];
-}
-
-.score-item {
-    @apply flex items-center gap-2;
-}
-
-.word-score {
-    @apply w-6 h-6 text-xs rounded-full border flex items-center justify-center;
 }
 </style>

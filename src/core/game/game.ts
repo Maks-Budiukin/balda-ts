@@ -83,8 +83,7 @@ export class Game implements IGame {
   }
 
   async initGame(): Promise<void> {
-    this.board.fill()
-    this.board.placeInitWord()
+    this.board.init()
   }
 
   startGame(): void {
@@ -93,7 +92,7 @@ export class Game implements IGame {
     this.initGame()
   }
 
-  getWinner(): void {
+  private getWinner(): void {
     const result = this.state.players.reduce(
       (acc: { bestScore: number; winners: IPlayer[] }, player: IPlayer) => {
         const score = player.totalScore
@@ -113,7 +112,7 @@ export class Game implements IGame {
     this.state.winners = result.winners
   }
 
-  endGame(): void {
+  private endGame(): void {
     this.state.gameStarted = false
     this.getWinner()
 

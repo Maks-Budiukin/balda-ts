@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { Board } from '@/core//board/board'
 import PlayerComponent from '@/components/PlayerComponent.vue';
@@ -9,91 +9,123 @@ import TooltipComponent from './TooltipComponent.vue';
 import { Player } from '@/core/player/player';
 import { WordService } from '@/services/wordService/wordService';
 import { Game } from '@/core/game/game';
+import type { GameState, IGame } from '@/core/game/types';
+import type { IBoard, IBoardState } from '@/core/board/types';
+import type { IPlayer } from '@/core/player/types';
+import type { IWordService } from '@/services/wordService/types';
 
-const game = ref(null)
-const board = ref(null)
-const initWord = ref('слово')
-const playersAmount = ref(2)
 
-const players = ref([])
+const game = ref<IGame | null>(null)
+const board = ref<IBoard | null>(null)
+const initWord = ref<string>('слово')
+const playersAmount = ref<number>(2)
 
-const wordService = new WordService()
+const players = ref<IPlayer[]>([])
 
-const createPlayers = () => {
+const wordService: IWordService = new WordService()
+
+const createPlayers = (): void => {
     for (let i = 1; i <= playersAmount.value; i += 1) {
         players.value.push(new Player(i))
     }
 }
 
-const setBoard = (initWord) => {
+const setBoard = (initWord: string): void => {
     board.value = new Board(initWord.toUpperCase())
 }
 
-const setGame = () => {
-    game.value = new Game(board.value, players.value, wordService)
+const setGame = (): void => {
+    if (board.value) {
+        game.value = new Game(board.value, players.value, wordService)
+    }
 }
 
-const startGame = () => {
+const startGame = (): void => {
     createPlayers()
     setBoard(initWord.value);
     setGame()
-    game.value.startGame()
+    if (game.value) {
+        game.value.startGame()
+    }
 }
 
-const cellsMap = computed(() => board.value?.state.cellsMap);
-const placedCell = computed(() => board.value?.state.placedCell);
-const selection = computed(() => board.value?.state.selectedCells.length > 0)
+const boardState = computed<IBoardState | undefined>(() => board.value?.state);
+const gameState = computed<GameState | undefined>(() => game.value?.state);
 
-const gameStarted = computed(() => game.value?.state.gameStarted);
-const gameEnded = computed(() => game.value?.state.gameEnded);
-const currentPlayer = computed(() => players.value[game.value?.state.currentPlayerIndex].getPlayerName);
+const gameEnded = computed<boolean | undefined>(() => gameState.value?.gameEnded);
+const currentPlayer = computed<string | undefined>(() => {
+    if (game.value) {
+        return players.value[game.value.state.currentPlayerIndex].getPlayerName
+    }
+    else {
+        return undefined
+    }
+});
 
-const canPlaceLetter = (x, y) => {
-    return board.value.canPlaceLetter(x, y)
+const canPlaceLetter = (x: number, y: number) => {
+    if (board.value) {
+        return board.value.canPlaceLetter(x, y)
+    }
 }
 
-const placeLetter = (event, x, y) => {
-    const letter = event.dataTransfer.getData('letter')
-    board.value.placeLetter(x, y, letter)
+const placeLetter = (event: DragEvent, x: number, y: number) => {
+    const letter = event.dataTransfer?.getData('letter')
+    if (letter && board.value) {
+        board.value.placeLetter(x, y, letter)
+    }
 };
 
-const togglePick = (x, y) => {
-    if (gameStarted.value) {
+const togglePick = (x: number, y: number): void => {
+    if (board.value && gameState.value?.gameStarted) {
         board.value.togglePick(x, y)
     }
 }
 
-const submitWord = () => {
-    game.value.submitWord()
+const submitWord = (): void => {
+    if (game.value) {
+        game.value.submitWord()
+    }
 }
 
-const unpickWord = () => {
-    board.value.unpickWord()
+const unpickWord = (): void => {
+    if (board.value) {
+        board.value.unpickWord()
+    }
+
 }
 
-const unplaceLetter = () => {
-    board.value.unplaceLetter()
+const unplaceLetter = (): void => {
+    if (board.value) {
+        board.value.unplaceLetter()
+    }
 };
 
-const skipTurn = () => {
-    game.value.skipTurn()
+const skipTurn = (): void => {
+    if (game.value) {
+        game.value.skipTurn()
+    }
 }
 
-const blockSubmit = computed(() => {
-    return game.value.blockSubmit()
+const blockSubmit = computed<boolean | string | undefined>(() => {
+    if (game.value) {
+        return game.value.blockSubmit()
+    } else {
+        return undefined
+    }
+
 });
 
-const tooltipVisible = ref(false);
+const tooltipVisible = ref<boolean>(false);
 
-const showTooltip = () => {
+const showTooltip = (): void => {
     tooltipVisible.value = true;
 };
 
-const hideTooltip = () => {
+const hideTooltip = (): void => {
     tooltipVisible.value = false;
 };
 
-const resetGame = () => {
+const resetGame = (): void => {
     board.value = null;
     players.value = [];
     game.value = null;
@@ -109,21 +141,25 @@ watch(gameEnded, val => {
 
 <template>
     <div class="wrapper">
-        <InitScreen v-if="!gameStarted" @start="startGame" v-model:players="playersAmount" v-model:word="initWord" />
+        <InitScreen v-if="!gameState?.gameStarted" @start="startGame" v-model:players="playersAmount"
+            v-model:word="initWord" />
 
         <div v-else>
-            <BoardComponent :cells-map="cellsMap" :init-word="initWord" :is-playing="gameStarted"
-                @check="canPlaceLetter" @place="placeLetter" @pick="togglePick" />
+            <BoardComponent v-if="boardState" :cells-map="boardState?.cellsMap || []" :init-word="initWord"
+                :is-playing="gameState.gameStarted" @check="canPlaceLetter" @place="placeLetter" @pick="togglePick" />
             <div class="button-wrapper">
                 <div class="relative">
-                    <button class="button disabled:text-[#bebebe]" @click="submitWord" :disabled="blockSubmit"
-                        @mouseenter="showTooltip" @mouseleave="hideTooltip">Отправить слово</button>
-                    <TooltipComponent v-if="blockSubmit" :show="tooltipVisible" :text="blockSubmit" />
+                    <button class="button disabled:text-[#bebebe]" @click="submitWord"
+                        :disabled="typeof blockSubmit === 'string'" @mouseenter="showTooltip"
+                        @mouseleave="hideTooltip">Отправить слово</button>
+                    <TooltipComponent v-if="typeof blockSubmit === 'string'" :show="tooltipVisible"
+                        :text="blockSubmit" />
                 </div>
                 <button class="button disabled:text-[#bebebe] disabled:pointer-events-none" @click="unpickWord"
-                    :disabled="!selection">Сбросить выделение</button>
+                    :disabled="boardState && !(boardState?.selectedCells.length > 0)">Сбросить
+                    выделение</button>
                 <button class="button disabled:text-[#bebebe] disabled:pointer-events-none" @click="unplaceLetter"
-                    :disabled="!placedCell">Убрать букву</button>
+                    :disabled="!boardState?.placedCell">Убрать букву</button>
                 <button class="button" @click="skipTurn">Пропустить ход</button>
             </div>
 
@@ -131,8 +167,7 @@ watch(gameEnded, val => {
 
             <div class="flex justify-center">
                 <PlayerComponent v-for="player in players" :key="player.getPlayerName" :player="player"
-                    :class="{ 'bg-lime-500/25 duration-500': player.getPlayerName === currentPlayer }"
-                    @click="player.totalScore = 0" />
+                    :class="{ 'bg-lime-500/25 duration-500': player.getPlayerName === currentPlayer }" />
             </div>
         </div>
     </div>

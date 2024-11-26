@@ -3,8 +3,8 @@ import type { ICell } from './types'
 export class Cell implements ICell {
   readonly x: number
   readonly y: number
-  letter: string | null
-  picked: boolean
+  private letter: string | null
+  private picked: boolean
 
   constructor(x: number, y: number) {
     this.x = x

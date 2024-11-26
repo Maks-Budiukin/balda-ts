@@ -1,19 +1,19 @@
-<script setup>
-// eslint-disable-next-line no-unused-vars
-const props = defineProps({
-    cell: {
-        type: Object,
-        required: true
-    },
-    isPlaying: {
-        type: Boolean,
-        required: true
-    }
-});
+<script setup lang="ts">
+import type { ICell } from '@/core/cell/types';
+import { computed } from 'vue';
+
+const props = defineProps<{
+    cell: ICell
+    isPlaying: boolean
+}>();
 
 const emit = defineEmits(['pick']);
 
-const togglePick = () => {
+const letter = computed(() => {
+    return props.cell?.getLetter
+})
+
+const togglePick = (): void => {
     if (props.isPlaying) {
         emit('pick')
     }
@@ -22,10 +22,10 @@ const togglePick = () => {
 </script>
 
 <template>
-    <div :class="['cell', cell.getLetter ? 'bg-[#FFFFFF]' : 'bg-[#f5f5f5]', cell.isPicked ? 'bg-lime-100 rounded-sm' : 'border-[#ECECEC]']"
+    <div :class="['cell', letter ? 'bg-[#FFFFFF]' : 'bg-[#f5f5f5]', cell.isPicked ? 'bg-lime-100 rounded-sm' : 'border-[#ECECEC]']"
         @click="togglePick">
 
-        <p v-if="cell.getLetter"> {{ cell.getLetter }}</p>
+        <p v-if="letter"> {{ letter }}</p>
 
     </div>
 </template>

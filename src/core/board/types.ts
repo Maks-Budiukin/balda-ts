@@ -12,10 +12,8 @@ export type IBoardState = {
 
 export interface IBoard {
   state: IBoardState
-  fill(): void
-  placeInitWord(): void
-  getCell(x: number, y: number): ICell | null
-  getNeighbors(x: number, y: number, callback?: (neighbors: ICell[]) => any): any
+
+  init(): void
   canPlaceLetter(x: number, y: number): boolean
   placeLetter(x: number, y: number, letter: string): void
   unplaceLetter(): void

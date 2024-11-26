@@ -7,6 +7,5 @@ export type VocabularyType = {
 }
 
 export interface IWordService {
-  vocabulary: VocabularyType | null
   checkWord(word: string): Promise<string | null>
 }

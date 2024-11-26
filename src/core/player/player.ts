@@ -1,7 +1,7 @@
 import type { IPlayer, ScoreObject } from './types'
 
 export class Player implements IPlayer {
-  playerNumber: number
+  private playerNumber: number
   scoreBoard: ScoreObject[]
   totalScore: number
 
